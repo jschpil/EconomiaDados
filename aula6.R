@@ -23,6 +23,34 @@ library(tidyverse)
 grafpainel <- ggplot(dadospib,
                      mapping = aes(x=year,
                                    y= NY.GDP.MKTP.CD))+
-geom_point()
+  geom_point()
 
 print(grafpainel)
+
+grafcorte <- ggplot(dadospib2023,
+                     mapping = aes(x=year,
+                                   y= NY.GDP.MKTP.CD))+
+  geom_point()
+
+print(grafcorte)
+
+grafserie <- ggplot(dadospibbr,
+                    mapping = aes(x=year,
+                                  y= NY.GDP.MKTP.CD))+
+  geom_point()
+
+print(grafserie)
+
+dadosmortes <- WDI(country = 'all',
+                   indicator = 'SH.DTH.INJR.ZS',
+                   start = 2018, end = 2019)
+
+
+grafmortes <- ggplot(dadosmortes,
+                     mapping = aes(x=	year,
+                                   y= SH.DTH.INJR.ZS))+
+
+  geom_point()
+
+print(grafmortes)   
+
