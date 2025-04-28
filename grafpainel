@@ -1,0 +1,23 @@
+# Carregar pacotes
+library(WDI)
+library(ggplot2)
+
+# Baixar dados
+dados <- WDI(country = c("BR", "US", "JP", "DE", "ZA", "CN", "IN", "RU", "FR", "MX"),
+             indicator = c("NY.GDP.PCAP.CD", "SP.DYN.LE00.IN"),
+             start = 2022,
+             end = 2022)
+
+# Remover dados faltantes
+dados <- dados[!is.na(dados$NY.GDP.PCAP.CD) & !is.na(dados$SP.DYN.LE00.IN), ]
+
+# Gráfico
+grafico <- ggplot(dados, aes(x = NY.GDP.PCAP.CD, y = SP.DYN.LE00.IN)) +
+  geom_point(color = "steelblue") +
+  scale_x_log10() +
+  labs(title = "PIB per Capita vs Expectativa de Vida (2022)",
+       subtitle = "10 países selecionados",
+       x = "PIB per Capita (log, USD)",
+       y = "Expectativa de Vida (anos)")
+
+print(grafico)
