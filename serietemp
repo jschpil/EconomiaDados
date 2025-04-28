@@ -1,0 +1,25 @@
+# Instalar pacotes se necessário
+if (!require(WDI)) install.packages("WDI")
+if (!require(ggplot2)) install.packages("ggplot2")
+
+# Carregar pacotes
+library(WDI)
+library(ggplot2)
+
+# Buscar dados de expectativa de vida (2000-2022)
+dadosvida <- WDI(country = c("BR", "US", "JP", "DE", "ZA"),
+                 indicator = "SP.DYN.LE00.IN",
+                 start = 2000,
+                 end = 2022)
+
+# Remover valores faltantes
+dadosvida <- dadosvida[!is.na(dadosvida$SP.DYN.LE00.IN), ]
+
+# Gráfico
+grafvida <- ggplot(dadosvida,
+                   mapping = aes(x = year,
+                                 y = SP.DYN.LE00.IN,
+                                 color = country)) +
+  geom_line()
+
+print(grafvida)
