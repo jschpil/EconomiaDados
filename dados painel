@@ -1,0 +1,20 @@
+# Pacotes
+library(WDI)
+library(ggplot2)
+
+# Buscar o PIB per capita em 2022
+dadospib2022 <- WDI(country = c("BR", "US", "JP", "DE", "ZA", "CN", "RU", "IN", "MX", "FR"),
+                    indicator = "NY.GDP.PCAP.CD",
+                    start = 2022,
+                    end = 2022)
+
+# Remover dados faltantes
+dadospib2022 <- dadospib2022[!is.na(dadospib2022$NY.GDP.PCAP.CD), ]
+
+# Gráfico
+grafpib2022 <- ggplot(dadospib2022,
+                      mapping = aes(x = country,
+                                    y = NY.GDP.PCAP.CD)) +
+  geom_point()
+
+print(grafpib2022)
