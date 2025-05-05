@@ -1,0 +1,131 @@
+---
+---
+title: "João Pedro Schpil"
+format: html
+editor: visual
+---
+
+```{r}
+# Carregar pacotes
+library(WDI)
+library(ggplot2)
+library(tidyverse)
+library(dplyr)
+
+{r}
+library(WDI)
+library(ggplot2)
+library(dplyr)
+
+# Baixar os dados
+dados <- WDI(
+  country = c("BR", "US", "JP", "DE", "ZA", "CN", "IN", "RU", "FR", "MX"),
+  indicator = c("NY.GDP.PCAP.CD", "SP.DYN.LE00.IN"),
+  start = 2022,
+  end = 2022
+)
+
+# Limpar dados
+dados <- dados %>%
+  filter(!is.na(NY.GDP.PCAP.CD), !is.na(SP.DYN.LE00.IN))
+
+# Gráfico com nomes dos países e visual mais limpo
+ggplot(dados, aes(x = NY.GDP.PCAP.CD, y = SP.DYN.LE00.IN, label = country)) +
+  geom_point(color = "#1f77b4", size = 4, alpha = 0.8) +
+  geom_text(vjust = -1, size = 3.5, color = "gray20") +
+  scale_x_log10(labels = scales::dollar_format()) +
+  labs(
+    title = "Riqueza e Vida: Uma Janela para 2022",
+    subtitle = "PIB per Capita vs Expectativa de Vida em 10 países",
+    x = "PIB per Capita (log, USD)",
+    y = "Expectativa de Vida (anos)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12)
+  )
+
+{r}
+# Pacotes
+library(WDI)
+library(ggplot2)
+library(dplyr)
+library(scales)  # pra formatar valores
+
+# Dados
+dadospib2022 <- WDI(
+  country = c("BR", "US", "JP", "DE", "ZA", "CN", "RU", "IN", "MX", "FR"),
+  indicator = "NY.GDP.PCAP.CD",
+  start = 2022,
+  end = 2022
+)
+
+# Limpeza
+dadospib2022 <- dadospib2022 %>%
+  filter(!is.na(NY.GDP.PCAP.CD)) %>%
+  mutate(country = reorder(country, NY.GDP.PCAP.CD))
+
+# Gráfico
+grafico_bonito <- ggplot(dadospib2022, aes(x = country, y = NY.GDP.PCAP.CD)) +
+  geom_col(fill = "#69b3a2", width = 0.6) +
+  coord_flip() +
+  scale_y_continuous(labels = dollar_format(prefix = "US$ ", big.mark = ".", decimal.mark = ",")) +
+  labs(
+    title = "PIB per Capita em 2022",
+    subtitle = "10 países selecionados — dados do Banco Mundial",
+    x = "País",
+    y = "PIB per Capita (USD)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12, color = "gray30"),
+    axis.text = element_text(color = "gray20"),
+    axis.title = element_text(face = "bold", color = "gray30")
+  )
+
+# Exibir
+print(grafico_bonito)
+{r}
+#| label: grafico-final
+#| fig-width: 10
+#| fig-height: 6
+#| dev: "png"
+#| dpi: 300
+
+# 1. Pacotes ESSENCIAIS (sem dependências extras)
+library(WDI)
+library(ggplot2)
+
+# 2. Dados garantidos (sem erros)
+dados <- WDI(
+  country = c("BR", "US", "JP", "DE", "ZA"),
+  indicator = "SP.DYN.LE00.IN",
+  start = 2000,
+  end = 2022,
+  extra = TRUE
+)
+
+# 3. Processamento à prova de falhas
+dados <- subset(dados, !is.na(SP.DYN.LE00.IN))
+dados$country <- factor(dados$country,
+                      labels = c("Brasil", "EUA", "Japão", "Alemanha", "África do Sul"))
+
+# 4. Gráfico robusto (formato básico garantido)
+ggplot(dados, aes(x = year, y = SP.DYN.LE00.IN, color = country)) +
+  geom_line(linewidth = 1.5) +
+  geom_point(size = 2.5) +
+  scale_y_continuous(limits = c(50, 85), breaks = seq(50, 85, 5)) +
+  scale_x_continuous(breaks = seq(2000, 2022, 2)) +
+  labs(
+    title = NULL, # Removendo título para controle manual no Quarto
+    x = "Ano",
+    y = "Expectativa de Vida (anos)",
+    color = "País"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
+  )
