@@ -1,0 +1,33 @@
+# Instale os pacotes (se necessário)
+install.packages(c("WDI", "ggplot2"))
+install.packages("tidyverse")
+install.packages("dplyr")
+install.packages(c("ggrepel", "viridis"))
+
+# Carregue os pacotes
+library(WDI)
+library(ggplot2)
+
+# Baixe os dados
+dados <- WDI(
+  country = c("BR", "US", "JP", "DE", "ZA", "CN", "IN", "RU", "FR", "MX"),
+  indicator = c("NY.GDP.PCAP.CD", "SP.DYN.LE00.IN"),
+  start = 2022,
+  end = 2022
+)
+
+# Remova dados faltantes
+dados <- dados[complete.cases(dados), ]
+
+# Crie o gráfico
+ggplot(dados, aes(x = NY.GDP.PCAP.CD, y = SP.DYN.LE00.IN, label = country)) +
+  geom_point(color = "steelblue", size = 3) +
+  geom_text(hjust = -0.1, vjust = 0.5, size = 3) +  # Rótulos dos países
+  scale_x_log10(labels = scales::dollar) +
+  labs(
+    x = "PIB per Capita (log, USD)",
+    y = "Expectativa de Vida (anos)",
+    title = "Relação Econômica-Social (2022)"
+  ) +
+  theme_minimal()
+
