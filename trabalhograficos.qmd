@@ -1,0 +1,138 @@
+---
+title: "João Pedro Schpil"
+format: html
+editor: visual
+---
+
+**VARIÁVEL**
+
+**NY.GDP.PCAP.CD** – PIB per capita em dólares correntes. Mede a riqueza média por pessoa em cada país. É uma variável econômica de nível, usada para comparações de desenvolvimento e padrão de vida.
+
+### GRÁFICO COM SÉRIE TEMPORAL
+
+O gráfico traça a jornada de nações ao longo de duas décadas, revelando o compasso entre crescimento econômico e esperança de vida. Enquanto países como China e Índia exibem ascensões notáveis em ambos os indicadores, outros, como a Rússia, mostram progresso econômico sem o mesmo reflexo na longevidade. O Brasil, com passos moderados, caminha entre avanços e desafios. A trajetória revela que, embora o PIB cresça, a vida longa exige mais que renda — exige cuidado, equidade e visão de futuro.
+
+```{r message=FALSE, warning=FALSE}
+library(WDI)
+library(ggplot2)
+library(dplyr)
+library(scales)
+
+# Baixar os dados
+dados <- WDI(
+  country = c("BR", "US", "JP", "DE", "ZA", "CN", "IN", "RU", "FR", "MX"),
+  indicator = c("NY.GDP.PCAP.CD", "SP.DYN.LE00.IN"),
+  start = 2022,
+  end = 2022
+)
+
+# Limpar dados
+dados <- dados %>%
+  filter(!is.na(NY.GDP.PCAP.CD), !is.na(SP.DYN.LE00.IN))
+
+# Gráfico com nomes dos países e visual mais limpo
+ggplot(dados, aes(x = NY.GDP.PCAP.CD, y = SP.DYN.LE00.IN, label = country)) +
+  geom_point(color = "#1f77b4", size = 4, alpha = 0.8) +
+  geom_text(vjust = -1, size = 3.5, color = "gray20") +
+  scale_x_log10(labels = scales::dollar_format()) +
+  labs(
+    title = "Riqueza e Vida: Uma Janela para 2022",
+    subtitle = "PIB per Capita vs Expectativa de Vida em 10 países",
+    x = "PIB per Capita (log, USD)",
+    y = "Expectativa de Vida (anos)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12)
+  )
+```
+
+### GRÁFICO COM CORTE TRANSVERSAL
+
+O gráfico evidencia disparidades marcantes entre os países analisados em 2022. Os Estados Unidos lideram com folga, seguidos por Alemanha, França e Japão — todos acima de US\$ 40 mil per capita. Na outra ponta, Índia e África do Sul registram os menores valores. A posição intermediária do Brasil reflete uma economia ainda em desenvolvimento, com desafios estruturais. A disposição dos países no eixo revela que o acesso à riqueza não é uniforme e carrega implicações diretas sobre bem-estar e políticas públicas.
+
+```{r, message=FALSE, warning=FALSE}
+library(WDI)
+library(ggplot2)
+library(dplyr)
+library(scales)
+
+# Dados PIB per capita
+dadospib2022 <- WDI(
+  country = c("BR", "US", "JP", "DE", "ZA", "CN", "RU", "IN", "MX", "FR"),
+  indicator = "NY.GDP.PCAP.CD",
+  start = 2022,
+  end = 2022
+)
+
+# Limpeza
+dadospib2022 <- dadospib2022 %>%
+  filter(!is.na(NY.GDP.PCAP.CD)) %>%
+  mutate(country = reorder(country, NY.GDP.PCAP.CD))
+
+# Gráfico
+grafico_bonito <- ggplot(dadospib2022, aes(x = country, y = NY.GDP.PCAP.CD)) +
+  geom_col(fill = "#69b3a2", width = 0.6) +
+  coord_flip() +
+  scale_y_continuous(labels = dollar_format(prefix = "US$ ", big.mark = ".", decimal.mark = ",")) +
+  labs(
+    title = "PIB per Capita em 2022",
+    subtitle = "10 países selecionados — dados do Banco Mundial",
+    x = "País",
+    y = "PIB per Capita (USD)"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12, color = "gray30"),
+    axis.text = element_text(color = "gray20"),
+    axis.title = element_text(face = "bold", color = "gray30")
+  )
+
+# Exibir
+print(grafico_bonito)
+```
+
+### GRÁFICO COM DADOS EM PAINEL
+
+A evolução da expectativa de vida entre 2000 e 2022 revela trajetórias distintas: Japão e Alemanha (linhas superiores) mantêm altos patamares ao longo de todo o período, refletindo sistemas de saúde robustos. O Brasil (azul) mostra crescimento contínuo, ainda que distante dos países desenvolvidos. África do Sul (linha inferior) exibe a recuperação mais intensa, após queda acentuada no início dos anos 2000, possivelmente ligada à epidemia de HIV/AIDS. Já os Estados Unidos (vermelho), embora ricos, apresentam estagnação nos últimos anos — sugerindo que riqueza, por si só, não garante longevidade.
+
+```{r, message=FALSE, warning=FALSE}
+library(WDI)
+library(ggplot2)
+library(dplyr)
+library(scales)
+
+# Dados expectativa de vida
+dados <- WDI(
+  country = c("BR", "US", "JP", "DE", "ZA"),
+  indicator = "SP.DYN.LE00.IN",
+  start = 2000,
+  end = 2022,
+  extra = TRUE
+)
+
+# Limpeza
+dados <- subset(dados, !is.na(SP.DYN.LE00.IN))
+dados$country <- factor(dados$country,
+                        labels = c("Brasil", "EUA", "Japão", "Alemanha", "África do Sul"))
+
+# Gráfico
+ggplot(dados, aes(x = year, y = SP.DYN.LE00.IN, color = country)) +
+  geom_line(linewidth = 1.5) +
+  geom_point(size = 2.5) +
+  scale_y_continuous(limits = c(50, 85), breaks = seq(50, 85, 5)) +
+  scale_x_continuous(breaks = seq(2000, 2022, 2)) +
+  labs(
+    title = NULL,
+    x = "Ano",
+    y = "Expectativa de Vida (anos)",
+    color = "País"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    panel.grid.minor = element_blank()
+  )
+```
