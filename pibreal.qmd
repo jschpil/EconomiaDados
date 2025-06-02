@@ -1,0 +1,35 @@
+---
+title: "Análise do PIB per capita do Brasil (1990–2022)"
+format: html
+editor: visual
+---
+
+## Introdução
+
+O **PIB per capita** é uma métrica essencial para acompanhar o desenvolvimento econômico de um país. Ele reflete o valor médio da produção por pessoa.
+
+Aqui, apresentamos a evolução do PIB per capita do Brasil entre 1990 e 2022 com base em dados do Banco Mundial.
+
+------------------------------------------------------------------------
+
+## Animação da série histórica
+
+A seguir, o gráfico animado com a evolução do PIB per capita ao longo dos anos:
+
+![](pib_brasil.gif)
+
+-   **2002–2003**: instabilidade pré-eleitoral e aumento do risco Brasil.
+
+-   **2010**: pico de crescimento com boom das commodities.
+
+-   **2015–2016**: crise política e econômica afetam fortemente o PIB.
+
+-   **2020**: impacto severo da pandemia de COVID-19.
+
+-   **2021–2022**: início de recuperação, mas ainda com incertezas fiscais.
+
+------------------------------------------------------------------------
+
+## Conclusão
+
+A análise do PIB per capita permite observar momentos de crescimento e crise, além de refletir os impactos de eventos políticos e econômicos ao longo das décadas.
