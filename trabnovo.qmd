@@ -1,0 +1,80 @@
+---
+title: "Análise do PIB per capita do Brasil (1990–2022)"
+format: html
+editor: visual
+---
+
+## Introdução
+
+O **PIB per capita** é uma métrica essencial para acompanhar o desenvolvimento econômico de um país. Ele reflete o valor médio da produção por pessoa.
+
+Aqui, apresentamos a evolução do PIB per capita do Brasil entre 1990 e 2022 com base em dados do Banco Mundial.
+
+``` {r}
+#| echo: FALSE 
+#| message: FALSE 
+#| warning: FALSE
+#| include: FALSE
+
+
+library(WDI)
+library(dplyr)
+library(ggplot2)
+library(gganimate)
+library(gifski)
+
+# Obter os dados do Banco Mundial
+dados <- WDI(
+  country = "BR",
+  indicator = "NY.GDP.PCAP.CD",
+  start = 1990,
+  end = 2022
+)
+
+# Preparar os dados
+dados <- dados %>%
+  rename(pib_per_capita = `NY.GDP.PCAP.CD`) %>%
+  mutate(ano = as.integer(year))
+
+# Criar o gráfico animado
+grafico <- ggplot(dados, aes(x = ano, y = pib_per_capita)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_point(color = "red", size = 2) +
+  labs(
+    title = "PIB per capita do Brasil",
+    subtitle = "Ano: {frame_along}",
+    x = "Ano",
+    y = "PIB per capita (US$)",
+    caption = "Fonte: Banco Mundial"
+  ) +
+  theme_minimal() +
+  transition_reveal(ano)
+
+# Exibir a animação diretamente
+animate(grafico, renderer = gifski_renderer())
+
+```
+
+------------------------------------------------------------------------
+
+## Animação da série histórica
+
+A seguir, o gráfico animado com a evolução do PIB per capita ao longo dos anos:
+
+![](pib_brasil.gif)
+
+-   **2002–2003**: instabilidade pré-eleitoral e aumento do risco Brasil.
+
+-   **2010**: pico de crescimento com boom das commodities.
+
+-   **2015–2016**: crise política e econômica afetam fortemente o PIB.
+
+-   **2020**: impacto severo da pandemia de COVID-19.
+
+-   **2021–2022**: início de recuperação, mas ainda com incertezas fiscais.
+
+------------------------------------------------------------------------
+
+## Conclusão
+
+A análise do PIB per capita permite observar momentos de crescimento e crise, além de refletir os impactos de eventos políticos e econômicos ao longo das décadas.
