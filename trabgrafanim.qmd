@@ -1,0 +1,55 @@
+---
+title: "Evolução do PIB per capita no Brasil (1990–2022)"
+format: html
+editor: visual
+
+---
+
+## Introdução
+
+O **PIB per capita** é uma medida essencial para acompanhar o desenvolvimento econômico de um país.\
+Reflete o valor médio da produção por pessoa.
+
+Aqui, analisamos a evolução do PIB per capita do Brasil entre 1990 e 2022, com base em dados do Banco Central do Brasil.
+
+## Gráfico animado
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+library(GetBCBData)
+library(tidyverse)
+library(gganimate)
+library(gifski)
+
+
+my.id <- c(4380)
+df.bcb <- gbcbd_get_series(
+  id = my.id,
+  first.date = '1990-01-01',
+  last.date = Sys.Date(),
+  format.data = 'long',
+  use.memoise = TRUE,
+  cache.path = tempdir(),
+  do.parallel = FALSE
+)
+
+
+df.bcb <- df.bcb %>%
+  mutate(ano = lubridate::year(ref.date))
+
+
+grafico <- ggplot(df.bcb, aes(x = ref.date, y = value)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_point(color = "red", size = 2) +
+  labs(
+    title = "PIB per capita do Brasil",
+    subtitle = "Ano: {frame_along}",
+    x = "Ano",
+    y = "R$ correntes",
+    caption = "Fonte: Banco Central do Brasil (SGS 4380)"
+  ) +
+  theme_minimal() +
+  transition_reveal(ref.date)
+
+animate(grafico, renderer = gifski_renderer())
+```
